@@ -25,14 +25,15 @@ function getData(e) {
         github.getGithubData(username)
             .then(resp => {
                 if (resp.user.message === "Not Found") {
-                    ui.showError("User not find");
+                    ui.showError("User not found");
                 } else {
+                    ui.addSearchedUserToUI(username);
+                    Storage.addSearchedUserToStorage(username);
                     ui.showUserInfo(resp.user);
-
                     ui.showRepoInfo(resp.repo);
                 }
             })
-            .catch(err => ui.showError(err));
+            // .catch(err => ui.showError(err));
     }
 
     ui.clearInput();
@@ -40,11 +41,22 @@ function getData(e) {
 }
 
 function clearAllSearched() {
-
+    if(confirm("Are you sure ?")){
+        Storage.clearAllSearchedUsersFromStorage();
+        ui.clearAllSearchedFromUI();
+    }
 
 }
 
 function getAllSearched() {
 
+    let users = Storage.getSearchedUsersFromStorage();
+
+    let result = "";
+    users.forEach(user => {
+        result += `<li class="list-group-item">${user}</li>`;
+    });
+
+    lastUsers.innerHTML = result;
 
 }
